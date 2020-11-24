@@ -1,0 +1,85 @@
+from com.concurnas.lang import gpus
+from java.math import BigDecimal
+from java.math import RoundingMode
+
+constant LOOP_SIZE = 2000000.0
+constant ARRAY_LENGTH = 10000
+
+gpukernel 1 twoArrayOp(global in A double[], global out result double[]) {
+    idx = get_global_id(0)
+    var tempPi = 0.0
+    // Repeats this math process and then adds it to the output array
+    for (it = 0; it < LOOP_SIZE; it++) {
+        if (it mod 2 == 0) {
+            tempPi += (1)/((2 * (A[idx] + it)) + 1)
+        }
+        else {
+            tempPi += (-1)/((2 * (A[idx] + it)) + 1)
+        }
+    }
+    result[idx] = tempPi
+}
+
+def arrayMake() double[] {
+    // Initializes the array
+    array double[] = double[ARRAY_LENGTH]
+    // Adds a series of numbers to the array
+    for (i = 0; i < (ARRAY_LENGTH); i++) {
+        array[i] = i * LOOP_SIZE
+    }
+    return array
+}
+
+def performCalc() double {
+    device = gpus.GPU().getGPUDevices()[0].devices[0]
+    //System.out.println("Summary:" + device.getSummary())
+    
+    arr = arrayMake()
+    //creates one array of size 1000 on this GPU, one as input and output
+    inGPU1 = device.makeOffHeapArrayMixed(double[].class, (arr.length))
+    //now writes to the arrays on the GPU
+    c1 := inGPU1.writeToBuffer(arr)
+    inst = twoArrayOp(inGPU1, inGPU1)
+    compute := device.exe(inst, [arr.length], c1)//run 10 cores to process twoArrayOp
+    ret = inGPU1.readFromBuffer(compute)
+    
+    pi = 0.0
+    
+    // Adds all of the elements in the array together
+    for (ele = 0; ele < ret.length; ele++) {
+        pi = ret[ele] + pi
+    }
+
+    return pi * 4
+}
+
+def main() {
+    // Prints the splash text
+    drawSplashArt()
+
+    // Does the work and times it
+    start = System.currentTimeMillis()
+    pi = performCalc()
+    end = System.currentTimeMillis()
+
+    // Outputs the results and the time taken
+    System.out.println ("\t\tPi = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
+    System.out.println("Time taken = {(end - start)/1000} seconds and {(end - start) mod 1000} milliseconds.")
+}
+
+// Prints banner
+def drawSplashArt() {
+    System.out.println("██████╗ ██╗███████╗██╗  ██╗ █████╗ ██╗   ██╗█ ███████╗ ")
+    System.out.println("██╔══██╗██║██╔════╝██║  ██║██╔══██╗██║   ██║  ██╔════╝ ")
+    System.out.println("██████╔╝██║███████╗███████║███████║██║   ██║  ███████╗ ")
+    System.out.println("██╔══██╗██║╚════██║██╔══██║██╔══██║╚██╗ ██╔╝  ╚════██║ ")
+    System.out.println("██║  ██║██║███████║██║  ██║██║  ██║ ╚████╔╝   ███████║ ")
+    System.out.println("╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝    ╚══════╝ ")
+    System.out.println("       ██████╗ ██╗       ██████╗ ██████╗ ██╗   ██╗    ")
+    System.out.println("       ██╔══██╗██║      ██╔════╝ ██╔══██╗██║   ██║    ")
+    System.out.println("       ██████╔╝██║ ███  ██║  ███╗██████╔╝██║   ██║    ")
+    System.out.println("       ██╔═══╝ ██║      ██║   ██║██╔═══╝ ██║   ██║    ")
+    System.out.println("       ██║     ██║      ╚██████╔╝██║     ╚██████╔╝    ")
+    System.out.println("       ╚═╝     ╚═╝       ╚═════╝ ╚═╝      ╚═════╝     ")
+    System.out.println()
+}

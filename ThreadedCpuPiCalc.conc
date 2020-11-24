@@ -1,0 +1,71 @@
+from java.util import ArrayList
+from java.math import BigDecimal
+from java.math import RoundingMode
+
+constant LOOP_SIZE = 2000000.0
+constant ARRAY_LENGTH = 10000
+
+def doCalc(start double) double {
+    finish = start + LOOP_SIZE
+    var pi = 0.0
+    // Repeats this math process and returns a value
+    for (it = start; it < finish; it++) {
+        if (it mod 2 == 0) {
+            pi += (1/((2 * it) + 1.0))
+        }
+        else {
+            pi += (-1/((2 * it) + 1.0))
+        }
+    }
+    return pi
+}
+
+def performCalc() double {
+    list = new ArrayList<double:>();
+
+    // Adds the calculated values to the list
+    for (i = 0; i < ARRAY_LENGTH; i++) {
+        startValue = i * LOOP_SIZE
+        list.add(
+            {doCalc(startValue)}!
+        )
+    }
+    
+    // Adds all of the elements in the array together
+    pi = 0.0
+    for (ele in list) {
+        pi = pi + ele:
+    }
+    return pi * 4
+}
+
+def main() {
+    // Prints the splash text
+    drawSplashArt()
+
+    // Does the work and times it
+    start = System.currentTimeMillis()
+    pi = performCalc()
+    end = System.currentTimeMillis()
+
+    // Outputs the results and the time taken
+    System.out.println ("       Pi = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
+    System.out.println("Time taken = {(end - start)/1000} seconds and {(end - start) mod 1000} milliseconds.")
+}
+
+// Prints banner
+def drawSplashArt() {
+    System.out.println("██████╗ ██╗███████╗██╗  ██╗ █████╗ ██╗   ██╗█ ███████╗ ")
+    System.out.println("██╔══██╗██║██╔════╝██║  ██║██╔══██╗██║   ██║  ██╔════╝ ")
+    System.out.println("██████╔╝██║███████╗███████║███████║██║   ██║  ███████╗ ")
+    System.out.println("██╔══██╗██║╚════██║██╔══██║██╔══██║╚██╗ ██╔╝  ╚════██║ ")
+    System.out.println("██║  ██║██║███████║██║  ██║██║  ██║ ╚████╔╝   ███████║ ")
+    System.out.println("╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝    ╚══════╝ ")
+    System.out.println("       ██████╗ ██╗       ██████╗ ██████╗ ██╗   ██╗    ")
+    System.out.println("       ██╔══██╗██║      ██╔════╝ ██╔══██╗██║   ██║    ")
+    System.out.println("       ██████╔╝██║ ███  ██║      ██████╔╝██║   ██║    ")
+    System.out.println("       ██╔═══╝ ██║      ██║      ██╔═══╝ ██║   ██║    ")
+    System.out.println("       ██║     ██║      ╚██████╗ ██║     ╚██████╔╝    ")
+    System.out.println("       ╚═╝     ╚═╝       ╚═════╝ ╚═╝      ╚═════╝     ")
+    System.out.println()
+}
