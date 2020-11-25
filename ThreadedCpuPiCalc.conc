@@ -2,8 +2,8 @@ from java.util import ArrayList
 from java.math import BigDecimal
 from java.math import RoundingMode
 
-constant LOOP_SIZE = 2000000.0
-constant ARRAY_LENGTH = 10000
+constant LOOP_SIZE = 2000000.0 // Determines the amount of work done by a core at a single moment
+constant LIST_LENGTH = 10000
 
 def doCalc(start double) double {
     finish = start + LOOP_SIZE
@@ -25,14 +25,14 @@ def performCalc() double {
     list = new ArrayList<double:>();
 
     // Adds the calculated values to the list
-    for (i = 0; i < ARRAY_LENGTH; i++) {
+    for (i = 0; i < LIST_LENGTH; i++) {
         startValue = i * LOOP_SIZE
         list.add(
             {doCalc(startValue)}!
         )
     }
     
-    // Adds all of the elements in the array together
+    // Adds all of the elements in the list together
     pi = 0.0
     for (ele in list) {
         pi = pi + ele:

@@ -2,7 +2,7 @@ from com.concurnas.lang import gpus
 from java.math import BigDecimal
 from java.math import RoundingMode
 
-constant LOOP_SIZE = 2000000.0
+constant LOOP_SIZE = 2000000.0 // Determines the amount of work done by a compute unit at a single moment
 constant ARRAY_LENGTH = 10000
 
 // Execute in GPU
