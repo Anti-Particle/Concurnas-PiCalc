@@ -1,8 +1,8 @@
 from java.util import ArrayList
 from java.math import BigDecimal
 from java.math import RoundingMode
-
-constant LOOP_SIZE = 2000000.0 // Determines the amount of work done by a core at a single moment
+// Determines the number of calculations done by a core
+constant LOOP_SIZE = 2000000.0 
 constant LIST_LENGTH = 10000
 
 def doCalc(start double) double {
@@ -28,6 +28,7 @@ def performCalc() double {
     for (i = 0; i < LIST_LENGTH; i++) {
         startValue = i * LOOP_SIZE
         list.add(
+            // The actual part that is multithreaded, the brackets and explamation mark can be removed to make the program single threaded
             {doCalc(startValue)}!
         )
     }
