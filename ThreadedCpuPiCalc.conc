@@ -51,23 +51,54 @@ def main() {
     end = System.currentTimeMillis()
 
     // Outputs the results and the time taken
-    System.out.println ("       π = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
-    System.out.println("Time taken = {(end - start)/1000} seconds and {(end - start) mod 1000} milliseconds.")
+    compareAndPrint(pi, end - start)
 }
 
 // Prints banner
 def drawSplashArt() {
-    System.out.println("██████╗ ██╗███████╗██╗  ██╗ █████╗ ██╗   ██╗█ ███████╗ ")
-    System.out.println("██╔══██╗██║██╔════╝██║  ██║██╔══██╗██║   ██║  ██╔════╝ ")
-    System.out.println("██████╔╝██║███████╗███████║███████║██║   ██║  ███████╗ ")
-    System.out.println("██╔══██╗██║╚════██║██╔══██║██╔══██║╚██╗ ██╔╝  ╚════██║ ")
-    System.out.println("██║  ██║██║███████║██║  ██║██║  ██║ ╚████╔╝   ███████║ ")
-    System.out.println("╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝    ╚══════╝ ")
-    System.out.println("       ██████╗ ██╗       ██████╗ ██████╗ ██╗   ██╗    ")
-    System.out.println("       ██╔══██╗██║      ██╔════╝ ██╔══██╗██║   ██║    ")
-    System.out.println("       ██████╔╝██║ ███  ██║      ██████╔╝██║   ██║    ")
-    System.out.println("       ██╔═══╝ ██║      ██║      ██╔═══╝ ██║   ██║    ")
-    System.out.println("       ██║     ██║      ╚██████╗ ██║     ╚██████╔╝    ")
-    System.out.println("       ╚═╝     ╚═╝       ╚═════╝ ╚═╝      ╚═════╝     ")
+    ANSI_RESET = "\u001B[0m"
+    ANSI_BLACK = "\u001B[30m"
+    ANSI_RED = "\u001B[31m"
+    ANSI_GREEN = "\u001B[32m"
+    ANSI_YELLOW = "\u001B[33m"
+    ANSI_BLUE = "\u001B[34m"
+    ANSI_PURPLE = "\u001B[35m"
+    ANSI_CYAN = "\u001B[36m"
+    ANSI_WHITE = "\u001B[37m"
+
     System.out.println()
+    System.out.println(ANSI_CYAN    + "╔" + ANSI_CYAN   + "═════════════════════════════════════════════════════════" + ANSI_CYAN + "╗")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_RED    + " ██████╗  ██╗███████╗██╗  ██╗ █████╗ ██╗   ██╗█ ███████╗ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_GREEN  + " ██╔══██╗ ██║██╔════╝██║  ██║██╔══██╗██║   ██║  ██╔════╝ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_YELLOW + " ██████╔╝ ██║███████╗███████║███████║██║   ██║  ███████╗ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_BLUE   + " ██╔══██╗ ██║╚════██║██╔══██║██╔══██║╚██╗ ██╔╝  ╚════██║ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_PURPLE + " ██║   ██╗██║███████║██║  ██║██║  ██║ ╚████╔╝   ███████║ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_PURPLE + " ╚═╝   ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝    ╚══════╝ " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "         ██████╗ ██████╗ ██╗   ██╗     ██████╗ ██╗       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ██╔════╝ ██╔══██╗██║   ██║     ██╔══██╗██║       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ██║      ██████╔╝██║   ██║ ██  ██████╔╝██║       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ██║      ██╔═══╝ ██║   ██║     ██╔═══╝ ██║       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ╚██████╗ ██║     ╚██████╔╝     ██║     ██║       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "         ╚═════╝ ╚═╝      ╚═════╝      ╚═╝     ╚═╝       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "╚" + ANSI_CYAN   + "═════════════════════════════════════════════════════════" + ANSI_CYAN + "╝")
+    System.out.println(ANSI_RESET)
+}
+
+// Compares with real Pi and prints color coded match
+def compareAndPrint(piVal double, time long) {
+    ANSI_GREEN = "\u001B[32m"
+    ANSI_RESET = "\u001B[0m"
+    System.out.print("       π = ")
+    val PI = ((BigDecimal("3.141592653589793")).toString()).split("")
+    val π = ((BigDecimal(piVal).setScale(15, RoundingMode.DOWN)).toString()).split("")
+    for (element = 0; element < π.length; element++) {
+        if (π[element] == PI[element]) {
+            System.out.print(ANSI_GREEN + π[element] + ANSI_RESET)
+        }
+        else {
+            System.out.print(π[element])
+        }
+    }
+    System.out.println()
+    System.out.println("Time taken = {(time)/1000} seconds and {(time) mod 1000} milliseconds.")
 }
