@@ -21,6 +21,7 @@ def doCalc(start double) double {
 }
 
 def performCalc() double {
+    // Creates a new list to be populated with refs that are doubles
     list = new ArrayList<double:>();
 
     // Adds the calculated values to the list
@@ -36,6 +37,7 @@ def performCalc() double {
     for (ele in list) {
         pi = pi + ele:
     }
+    // Since the values added together only equal π/4
     return pi * 4
 }
 
@@ -49,7 +51,7 @@ def main() {
     end = System.currentTimeMillis()
 
     // Outputs the results and the time taken
-    System.out.println ("       Pi = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
+    System.out.println ("       π = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
     System.out.println("Time taken = {(end - start)/1000} seconds and {(end - start) mod 1000} milliseconds.")
 }
 
