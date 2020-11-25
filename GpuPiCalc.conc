@@ -103,8 +103,10 @@ def compareAndPrint(piVal double, time long) {
     ANSI_GREEN = "\u001B[32m"
     ANSI_RESET = "\u001B[0m"
     System.out.print("       π = ")
+    // Turns the real pi and calculated pi into lists of characters
     val PI = ((BigDecimal("3.141592653589793")).toString()).split("")
     val π = ((BigDecimal(piVal).setScale(15, RoundingMode.DOWN)).toString()).split("")
+    // Compares each element of the list to the other list and prints the number based on whether or not it the digit is correct
     for (element = 0; element < π.length; element++) {
         if (π[element] == PI[element]) {
             System.out.print(ANSI_GREEN + π[element] + ANSI_RESET)
