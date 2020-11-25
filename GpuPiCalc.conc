@@ -6,7 +6,7 @@ constant LOOP_SIZE = 2000000.0
 constant ARRAY_LENGTH = 10000
 
 gpukernel 1 twoArrayOp(global in A double[], global out result double[]) {
-    idx = get_global_id(0)
+    idx = get_global_id(0) // Gets an entry from the input array and assigns a different one to each core
     var tempPi = 0.0
     // Repeats this math process and then adds it to the output array
     for (it = 0; it < LOOP_SIZE; it++) {
@@ -75,6 +75,7 @@ def drawSplashArt() {
     System.out.println("██╔══██╗██║╚════██║██╔══██║██╔══██║╚██╗ ██╔╝  ╚════██║ ")
     System.out.println("██║  ██║██║███████║██║  ██║██║  ██║ ╚████╔╝   ███████║ ")
     System.out.println("╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝    ╚══════╝ ")
+    System.out.println()
     System.out.println("       ██████╗ ██╗       ██████╗ ██████╗ ██╗   ██╗    ")
     System.out.println("       ██╔══██╗██║      ██╔════╝ ██╔══██╗██║   ██║    ")
     System.out.println("       ██████╔╝██║ ███  ██║  ███╗██████╔╝██║   ██║    ")
