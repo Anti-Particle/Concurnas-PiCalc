@@ -2,8 +2,9 @@ from java.util import ArrayList
 from java.math import BigDecimal
 from java.math import RoundingMode
 // Determines the number of calculations done by a core
-constant LOOP_SIZE = 2000000.0 
-constant LIST_LENGTH = 10000
+constant LOOP_SIZE = 2000.0 
+constant LIST_LENGTH = 3000
+val N = (LOOP_SIZE * LIST_LENGTH) - 1
 
 def doCalc(start double) double {
     finish = start + LOOP_SIZE
@@ -81,6 +82,8 @@ def drawSplashArt() {
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ██║      ██╔═══╝ ██║   ██║     ██╔═══╝ ██║       " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ╚██████╗ ██║     ╚██████╔╝     ██║     ██║       " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "         ╚═════╝ ╚═╝      ╚═════╝      ╚═╝     ╚═╝       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_YELLOW + "                 USING  LEIBNIZ'S  FORMULA               " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_YELLOW + "          π = 4 * ∑ [k=0...{N}] (−1)^k * 1/(2k+1)          " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "╚" + ANSI_CYAN   + "═════════════════════════════════════════════════════════" + ANSI_CYAN + "╝")
     System.out.println(ANSI_RESET)
 }
@@ -89,19 +92,21 @@ def drawSplashArt() {
 def compareAndPrint(piVal double, time long) {
     ANSI_GREEN = "\u001B[32m"
     ANSI_RESET = "\u001B[0m"
-    System.out.print("       π = ")
+    System.out.print("         π = ")
     // Turns the real pi and calculated pi into lists of characters
     val PI = ((BigDecimal("3.141592653589793")).toString()).split("")
     val π = ((BigDecimal(piVal).setScale(15, RoundingMode.DOWN)).toString()).split("")
     // Compares each element of the list to the other list and prints the number based on whether or not it the digit is correct
+    previousCorrect = true
     for (element = 0; element < π.length; element++) {
-        if (π[element] == PI[element]) {
+        if (π[element] == PI[element] and previousCorrect) {
             System.out.print(ANSI_GREEN + π[element] + ANSI_RESET)
         }
         else {
             System.out.print(π[element])
+            previousCorrect = false
         }
     }
     System.out.println()
-    System.out.println("Time taken = {(time)/1000} seconds and {(time) mod 1000} milliseconds.")
+    System.out.println("Time taken = {(time)/1000.0}s")
 }

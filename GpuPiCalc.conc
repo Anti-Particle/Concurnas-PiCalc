@@ -1,22 +1,20 @@
 from com.concurnas.lang import gpus
 from java.math import BigDecimal
 from java.math import RoundingMode
-// Determines the number of calculations done by each compute unit
-constant LOOP_SIZE = 2000000.0
-constant ARRAY_LENGTH = 10000
 
-// Execute in GPU
-gpukernel 1 gpuCalc(global in InputArray double[], global out result double[]) {
-    // Gets an entry from the input array and assigns a different one to each core
-    idx = get_global_id(0) 
+constant LOOP_SIZE = 2000.0
+constant ARRAY_LENGTH = 3000
+
+gpukernel 1 twoArrayOp(global in A double[], global out result double[]) {
+    idx = get_global_id(0) // Gets an entry from the input array and assigns a different one to each core
     var tempPi = 0.0
     // Repeats this math process and then adds it to the output array
     for (it = 0; it < LOOP_SIZE; it++) {
         if (it mod 2 == 0) {
-            tempPi += (1)/((2 * (InputArray[idx] + it)) + 1)
+            tempPi += (1)/((2 * (A[idx] + it)) + 1)
         }
         else {
-            tempPi += (-1)/((2 * (InputArray[idx] + it)) + 1)
+            tempPi += (-1)/((2 * (A[idx] + it)) + 1)
         }
     }
     result[idx] = tempPi
@@ -37,12 +35,12 @@ def performCalc() double {
     //System.out.println("Summary:" + device.getSummary())
     
     arr = arrayMake()
-    //creates one array of size 1000 on this GPU, both as input and output
+    //creates one array of size 1000 on this GPU, one as input and output
     inGPU1 = device.makeOffHeapArrayMixed(double[].class, (arr.length))
-    //now write to the arrays on the GPU
+    //now writes to the arrays on the GPU
     c1 := inGPU1.writeToBuffer(arr)
-    inst = gpuCalc(inGPU1, inGPU1)
-    compute := device.exe(inst, [arr.length], c1)
+    inst = twoArrayOp(inGPU1, inGPU1)
+    compute := device.exe(inst, [arr.length], c1)//run 10 cores to process twoArrayOp
     ret = inGPU1.readFromBuffer(compute)
     
     pi = 0.0
@@ -65,7 +63,8 @@ def main() {
     end = System.currentTimeMillis()
 
     // Outputs the results and the time taken
-    compareAndPrint(pi, end - start)
+    System.out.println ("\t\tπ = {BigDecimal(pi).setScale(15, RoundingMode.DOWN)}")
+    System.out.println("Time taken = {(end - start)/1000} seconds and {(end - start) mod 1000} milliseconds.")
 }
 
 // Prints banner
@@ -94,6 +93,8 @@ def drawSplashArt() {
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ██║   ██║██╔═══╝ ██║   ██║     ██╔═══╝ ██║       " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "        ╚██████╔╝██║     ╚██████╔╝     ██║     ██║       " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "║" + ANSI_WHITE  + "         ╚═════╝ ╚═╝      ╚═════╝      ╚═╝     ╚═╝       " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_YELLOW + "                 USING  LEIBNIZ'S  FORMULA               " + ANSI_CYAN + "║")
+    System.out.println(ANSI_CYAN    + "║" + ANSI_YELLOW + "      π = 4 * ∑ [k=0...{LOOP_SIZE * ARRAY_LENGTH - 1}] (-1)^k * 1/(2k+1)      " + ANSI_CYAN + "║")
     System.out.println(ANSI_CYAN    + "╚" + ANSI_CYAN   + "═════════════════════════════════════════════════════════" + ANSI_CYAN + "╝")
     System.out.println(ANSI_RESET)
 }
@@ -102,19 +103,22 @@ def drawSplashArt() {
 def compareAndPrint(piVal double, time long) {
     ANSI_GREEN = "\u001B[32m"
     ANSI_RESET = "\u001B[0m"
-    System.out.print("       π = ")
+    System.out.println("When N = {LOOP_SIZE * ARRAY_LENGTH - 1}")
+    System.out.print("         π = ")
     // Turns the real pi and calculated pi into lists of characters
     val PI = ((BigDecimal("3.141592653589793")).toString()).split("")
     val π = ((BigDecimal(piVal).setScale(15, RoundingMode.DOWN)).toString()).split("")
     // Compares each element of the list to the other list and prints the number based on whether or not it the digit is correct
+    previousCorrect = true
     for (element = 0; element < π.length; element++) {
-        if (π[element] == PI[element]) {
+        if (π[element] == PI[element] and previousCorrect) {
             System.out.print(ANSI_GREEN + π[element] + ANSI_RESET)
         }
         else {
             System.out.print(π[element])
+            previousCorrect = false
         }
     }
-    System.out.println()
-    System.out.println("Time taken = {(time)/1000} seconds and {(time) mod 1000} milliseconds.")
+    System.out.println("Hello")
+    System.out.println("Time taken = {(time)/1000.0}s")
 }
